@@ -32,19 +32,21 @@ is a warning sign. Regenerate the generated section with `scripts/niri/divergenc
 > Note: `AGENTS.md` is the one new file whose name *could* also exist upstream. If upstream adds its
 > own `AGENTS.md`, merge the two by hand rather than clobbering either.
 
-## Generated: current direct `Quickshell.Hyprland` importers
+## Generated: files still coupled to Hyprland (imports + `hyprctl`)
 
-Run `scripts/niri/divergence.sh` to refresh. These should only ever shrink (as consumers migrate to
-`Compositor`), never grow.
+Run `scripts/niri/divergence.sh` to refresh. This is the same coupling the gate enforces (the 12-file
+baseline). The list should only ever shrink as consumers migrate to `Compositor`, never grow.
 
 <!-- BEGIN generated -->
-_Last refreshed: 2026-10-13. Direct importers: 10 (should only shrink)._
+_Last refreshed: 2026-10-13. Files coupled to Hyprland (import or hyprctl): 12 (should only shrink)._
 
 - `components/misc/CustomShortcut.qml`
+- `modules/areapicker/Picker.qml`
 - `modules/bar/components/workspaces/SpecialWorkspaces.qml`
 - `modules/bar/components/workspaces/Workspace.qml`
 - `modules/bar/components/workspaces/Workspaces.qml`
 - `modules/bar/popouts/Wrapper.qml`
+- `modules/bar/popouts/kblayout/KbLayoutModel.qml`
 - `modules/drawers/ContentWindow.qml`
 - `modules/windowinfo/Details.qml`
 - `modules/windowinfo/Preview.qml`

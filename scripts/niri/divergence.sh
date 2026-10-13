@@ -6,14 +6,17 @@ set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 doc="docs/niri-divergence.md"
 
-importers="$(grep -rlE '^\s*import\s+Quickshell\.Hyprland' --include='*.qml' . 2>/dev/null \
-             | sed 's|^\./||' | sort -u)"
-count="$(printf '%s\n' "$importers" | grep -c . || true)"
+# Match the SAME coupling the gate enforces: a direct Quickshell.Hyprland import OR a hyprctl
+# shell-out. This keeps the generated count reconciled with the 12-file gate baseline.
+pattern='(^[[:space:]]*import[[:space:]]+Quickshell\.Hyprland|\bhyprctl\b)'
+coupled="$(grep -rlE "$pattern" --include='*.qml' . 2>/dev/null \
+           | sed 's|^\./||' | sort -u)"
+count="$(printf '%s\n' "$coupled" | grep -c . || true)"
 
 block="$(
-  printf '_Last refreshed: %s. Direct importers: %s (should only shrink)._\n\n' \
+  printf '_Last refreshed: %s. Files coupled to Hyprland (import or hyprctl): %s (should only shrink)._\n\n' \
     "$(date -u +%Y-%m-%d)" "$count"
-  printf '%s\n' "$importers" | sed 's/^/- `/; s/$/`/'
+  printf '%s\n' "$coupled" | sed 's/^/- `/; s/$/`/'
 )"
 
 tmp="$(mktemp)"

@@ -31,6 +31,7 @@ must stay **small, additive, and isolated**.
 | `docs/niri-architecture.md` | The compositor seam: the `Compositor` interface and how backends plug in |
 | `docs/niri-parity.md` | The exact Hyprland coupling surface + the niri feature checklist (done/partial/missing) |
 | `docs/niri-divergence.md` | Every file we changed vs upstream, why, and its merge risk |
+| `docs/niri-roadmap.md` | The staged plan to get there: milestones, definition of done, honest limits |
 | upstream `README.md`, `shell.qml` | What the shell is and how it starts |
 
 ## 2. The coupling surface (what niri must replace)
