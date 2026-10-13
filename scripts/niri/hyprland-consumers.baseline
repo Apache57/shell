@@ -1,0 +1,15 @@
+# Baseline: upstream files that import `Quickshell.Hyprland` directly.
+# The import gate (check-no-new-hyprland-imports.sh) allows ONLY these; any OTHER file that imports
+# Quickshell.Hyprland is a new direct coupling and fails the gate — it must use `Compositor` instead.
+# When you migrate a consumer onto services/Compositor.qml, DELETE its line from this file.
+# One path per line, repo-relative. Comments (#) and blank lines are ignored.
+services/Hypr.qml
+modules/drawers/ContentWindow.qml
+modules/bar/components/workspaces/Workspaces.qml
+modules/bar/components/workspaces/Workspace.qml
+modules/bar/components/workspaces/SpecialWorkspaces.qml
+modules/bar/popouts/Wrapper.qml
+modules/windowinfo/WindowInfo.qml
+modules/windowinfo/Preview.qml
+modules/windowinfo/Details.qml
+components/misc/CustomShortcut.qml
