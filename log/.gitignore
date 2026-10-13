@@ -1,0 +1,4 @@
+# Per-developer dev logs live here but are never committed (AGENTS.md §5, §7).
+# This .gitignore makes the log/ path exist in the repo while keeping its contents local.
+*
+!.gitignore

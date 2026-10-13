@@ -1,0 +1,21 @@
+# Baseline: upstream files allowed to couple to Hyprland directly — by `import Quickshell.Hyprland`
+# OR by a `hyprctl` shell-out. The gate (check-no-new-hyprland-coupling.sh) fails any OTHER file that
+# does either; those must go through services/Compositor.qml instead.
+# When you migrate a file onto Compositor, DELETE its line here in the same change.
+# One path per line, repo-relative. Comments (#) and blank lines are ignored.
+
+# -- Quickshell.Hyprland importers (10) --
+services/Hypr.qml
+modules/drawers/ContentWindow.qml
+modules/bar/components/workspaces/Workspaces.qml
+modules/bar/components/workspaces/Workspace.qml
+modules/bar/components/workspaces/SpecialWorkspaces.qml
+modules/bar/popouts/Wrapper.qml
+modules/windowinfo/WindowInfo.qml
+modules/windowinfo/Preview.qml
+modules/windowinfo/Details.qml
+components/misc/CustomShortcut.qml
+
+# -- hyprctl shell-outs (2) --
+modules/bar/popouts/kblayout/KbLayoutModel.qml
+modules/areapicker/Picker.qml
