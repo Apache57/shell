@@ -27,7 +27,7 @@ is a warning sign. Regenerate the generated section with `scripts/niri/divergenc
 | `docs/niri-parity.md` | coupling surface + feature checklist |
 | `docs/niri-divergence.md` | this file |
 | `scripts/niri/*` | sync, gate, divergence tooling + the consumers baseline |
-| `.github/workflows/niri-no-new-hyprland-imports.yml` | the import gate in CI |
+| `.github/workflows/niri-no-new-hyprland-coupling.yml` | the coupling gate in CI |
 
 > Note: `AGENTS.md` is the one new file whose name *could* also exist upstream. If upstream adds its
 > own `AGENTS.md`, merge the two by hand rather than clobbering either.

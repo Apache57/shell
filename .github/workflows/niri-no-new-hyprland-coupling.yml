@@ -1,6 +1,6 @@
 # Fork-only CI: enforce the compositor seam (see AGENTS.md §3 rule 1).
 # Named `niri-*` so it never collides with an upstream workflow on merge.
-name: niri · no new Hyprland imports
+name: niri · no new Hyprland coupling
 
 on:
   pull_request:
@@ -8,9 +8,9 @@ on:
     branches: ["**"]
 
 jobs:
-  no-new-hyprland-imports:
+  no-new-hyprland-coupling:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Check for new direct Quickshell.Hyprland imports
-        run: bash scripts/niri/check-no-new-hyprland-imports.sh
+      - name: Check for new direct Hyprland coupling (imports + hyprctl)
+        run: bash scripts/niri/check-no-new-hyprland-coupling.sh

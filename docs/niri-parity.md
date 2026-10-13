@@ -9,7 +9,8 @@
 - **Query:** `niri msg --json <cmd>` — e.g. `workspaces`, `windows`, `outputs`, `focused-window`,
   `keyboard-layouts`.
 - **Events:** the event stream on the socket at `$NIRI_SOCKET` (`niri msg --json event-stream`)
-  pushes `WorkspacesChanged`, `WindowsChanged`, `WindowFocusChanged`, `KeyboardLayoutsChanged`, etc.
+  pushes `WorkspacesChanged`, `WorkspaceActivated`, `WindowsChanged`, `WindowOpenedOrChanged`,
+  `WindowClosed`, `WindowFocusChanged`, `KeyboardLayoutsChanged`, `KeyboardLayoutSwitched`, etc.
   The `Niri` service holds a long-lived process/socket on this and updates reactive models — the way
   `Quickshell.Hyprland` keeps its models live.
 - **Dispatch:** actions go through `niri msg action <name> ...` (e.g. `focus-workspace`,
@@ -30,7 +31,25 @@
 | `modules/windowinfo/Details.qml` | toplevel metadata | map available fields; mark gaps | 🟡 |
 | `components/misc/CustomShortcut.qml` | **Hyprland global shortcuts** (keybinds) | niri owns keybinds in its KDL config; the shell cannot register global shortcuts the Hyprland way. Ship a documented niri keybind snippet that calls the shell's IPC / CLI | ⬜ needs design |
 | `plugin/src/Caelestia/Services/hyprextras.{cpp,hpp}` | Hyprland options/extras (native) | niri equivalents where they exist; else neutral defaults so QML never sees null | ⬜ |
-| `plugin/src/Caelestia/Services/hyprdevices.{cpp,hpp}` | keyboard devices: capsLock, numLock, active layout | niri `keyboard-layouts` + `KeyboardLayoutsChanged`; caps/num lock not in niri IPC — needs another source | 🟡 |
+| `plugin/src/Caelestia/Services/hyprdevices.{cpp,hpp}` | keyboard devices: capsLock, numLock, active layout | niri `keyboard-layouts` + `KeyboardLayoutSwitched`; caps/num lock not in niri IPC — needs another source | 🟡 |
+
+### Also compositor-coupled, but NOT caught by the import gate (no `Quickshell.Hyprland` import)
+
+The gate only sees `import Quickshell.Hyprland`. These couple to Hyprland by shelling out to `hyprctl`
+or by writing Hyprland config through `Hypr.extras`, and must be migrated onto `Compositor` by hand:
+
+| Upstream file | Uses from Hyprland | niri plan | Status |
+|---|---|---|---|
+| `modules/bar/popouts/kblayout/KbLayoutModel.qml` | `hyprctl switchxkblayout` / `getoption input:kb_layout` / `devices` | no `hyprctl` on niri: query `keyboard-layouts`, switch via niri's layout action, track `KeyboardLayoutSwitched` | ⬜ |
+| `modules/areapicker/Picker.qml` | `hyprctl cursorpos`; `Hypr.extras`, `Hypr.toplevelsForWs` | niri has no cursor-pos IPC — read the pointer from Qt/Wayland; windows from `niri msg --json windows` | 🟡 |
+| `services/GameMode.qml` | `Hypr.extras.applyOptions`/`message` — rewrites Hyprland config (animations, blur, gaps…) at runtime | niri can't be reconfigured over IPC: no-op / mark unavailable on niri | ⛔ |
+| `services/Colours.qml` | `Hypr.extras.batchMessage` — Hyprland `layerrule` blur/ignore_alpha | niri has no layer-rule IPC: no-op on niri | ⛔ |
+
+Beyond these, every reader of the `Hypr` singleton (e.g. `modules/bar/Bar.qml`,
+`modules/IdleMonitors.qml`, `modules/windowinfo/Buttons.qml`, `modules/bar/components/StatusIcons.qml`,
+`modules/bar/components/status/LockStatus.qml`, `modules/lock/center/StateMessage.qml`,
+`services/{NotifData,Notifs,ShellState}.qml`) must point at `Compositor` once the backend exists — a
+`Hypr.` → `Compositor.` swap, not tracked by the gate.
 
 ## Known model mismatches (map honestly, never fake)
 
@@ -42,6 +61,9 @@
   config. The fork ships a niri keybind snippet; it does not register shortcuts at runtime. ⬜
 - **Caps/Num lock** — Hyprland surfaces these via the native plugin; niri's IPC does not, so this
   needs a separate source or is marked unavailable. 🟡
+- **Runtime compositor config** — `GameMode`/`Colours` rewrite Hyprland settings live
+  (`applyOptions`, `layerrule` blur). niri cannot be reconfigured over IPC, so these degrade to
+  no-ops on niri. ⛔
 
 ## Work order (take the top open item)
 
